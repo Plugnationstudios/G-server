@@ -1,0 +1,58 @@
+const fs = require('fs');
+const path = require('path');
+const mime = require('mime-types');
+const { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } = require('@aws-sdk/client-s3');
+const { USE_S3, AWS_REGION, S3_BUCKET } = require('../config');
+const logger = require('../logger');
+
+let s3Client = null;
+if (USE_S3) s3Client = new S3Client({ region: AWS_REGION });
+
+async function uploadDirToS3(localDir, prefix) {
+  if (!USE_S3) throw new Error('S3 not enabled');
+  // recursively list files
+  const files = [];
+  (function walk(dir) {
+    for (const f of fs.readdirSync(dir)) {
+      const full = path.join(dir, f);
+      if (fs.statSync(full).isDirectory()) walk(full);
+      else files.push(full);
+    }
+  })(localDir);
+
+  for (const filePath of files) {
+    const rel = path.relative(localDir, filePath).replace(/\\/g, '/');
+    const key = `${prefix}/${rel}`;
+    const Body = fs.createReadStream(filePath);
+    const ContentType = mime.lookup(filePath) || 'application/octet-stream';
+    const cmd = new PutObjectCommand({ Bucket: S3_BUCKET, Key: key, Body, ContentType });
+    await s3Client.send(cmd);
+    logger.info('S3 uploaded', { key });
+  }
+}
+
+async function streamS3ToResponse(key, res) {
+  if (!USE_S3) throw new Error('S3 not enabled');
+  const cmd = new GetObjectCommand({ Bucket: S3_BUCKET, Key: key });
+  const out = await s3Client.send(cmd);
+  if (out.ContentType) res.setHeader('content-type', out.ContentType);
+  const stream = out.Body;
+  stream.pipe(res);
+}
+
+async function deletePrefixFromS3(prefix) {
+  if (!USE_S3) throw new Error('S3 not enabled');
+  let ContinuationToken = undefined;
+  do {
+    const listCmd = new ListObjectsV2Command({ Bucket: S3_BUCKET, Prefix: prefix, ContinuationToken });
+    const out = await s3Client.send(listCmd);
+    if (!out.Contents || out.Contents.length === 0) break;
+    // delete in batches of up to 1000
+    const objects = out.Contents.map(obj => ({ Key: obj.Key }));
+    const deleteCmd = new DeleteObjectsCommand({ Bucket: S3_BUCKET, Delete: { Objects: objects }});
+    await s3Client.send(deleteCmd);
+    ContinuationToken = out.NextContinuationToken;
+  } while (ContinuationToken);
+}
+
+module.exports = { uploadDirToS3, streamS3ToResponse, deletePrefixFromS3 };

@@ -1,0 +1,7 @@
+const { ADMIN_TOKEN } = require('../config');
+
+module.exports = function (req, res, next) {
+  const token = req.header('x-admin-token') || req.query.admin_token || '';
+  if (!token || token !== ADMIN_TOKEN) return res.status(403).json({ error: 'forbidden' });
+  return next();
+};

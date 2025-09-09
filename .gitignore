@@ -1,2 +1,6 @@
-node_modules
+node_modules/
+tmp/
+sites/
+backups/
+data/sites.json
 .env

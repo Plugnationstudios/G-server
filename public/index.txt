@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PlugNation Studios | Divine Hustle</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+    @font-face {
+      font-family: 'Algerian';
+      src: local('Algerian'), url('https://fonts.cdnfonts.com/s/13982/ALGER.TTF') format('truetype');
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #000000, #1a1a1a);
+      color: #ffd700;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* Starfield Animation */
+    canvas#stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -2;
+    }
+
+    /* Feather Canvas */
+    canvas#feathers {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Emblem Container */
+    .emblem-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Golden Wings */
+    .wings {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255,215,0,0.8), transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(-10deg);
+      filter: blur(8px);
+      animation: wingPulse 3s ease-in-out infinite alternate;
+      z-index: -1;
+    }
+    .wings.right {
+      transform: translate(-50%, -50%) rotate(10deg) scaleX(-1);
+    }
+
+    @keyframes wingPulse {
+      from { opacity: 0.6; transform: translate(-50%, -50%) scale(1) rotate(-10deg); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(-10deg); }
+    }
+
+    /* PN Emblem */
+    .emblem {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffd700, #4d3b00 70%);
+      position: relative;
+      animation: spin 10s linear infinite, glow 3s ease-in-out infinite alternate;
+      box-shadow: 0 0 50px #ffd700, inset 0 0 30px #fff;
+      transform-style: preserve-3d;
+    }
+
+    /* PN Monogram */
+    .emblem::before {
+      content: "PN";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Algerian', serif;
+      font-size: 3.5em;
+      color: #fff;
+      text-shadow: 0 0 15px #ffd700, 0 0 30px #fff;
+      animation: glyphPulse 2s infinite alternate;
+    }
+
+    @keyframes spin {
+      from { transform: rotateY(0deg) rotateX(0deg); }
+      to { transform: rotateY(360deg) rotateX(360deg); }
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 50px #ffd700, inset 0 0 30px #fff; }
+      to { box-shadow: 0 0 80px #fff, inset 0 0 50px #ffd700; }
+    }
+
+    @keyframes glyphPulse {
+      from { text-shadow: 0 0 15px #ffd700, 0 0 30px #fff; }
+      to { text-shadow: 0 0 40px #fff, 0 0 60px #ffd700; }
+    }
+
+    h1 {
+      font-family: 'Algerian', serif;
+      font-size: 3.5em;
+      color: #fff;
+      text-shadow: 0 0 20px #ffd700, 0 0 40px #fff;
+    }
+
+    p {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.3em;
+      max-width: 800px;
+      margin: 20px auto;
+      line-height: 1.6;
+      color: #f5f5f5;
+    }
+
+    .cta {
+      margin-top: 40px;
+      display: inline-block;
+      padding: 18px 40px;
+      background: linear-gradient(45deg, #ffd700, #ff6600);
+      color: black;
+      font-weight: bold;
+      font-size: 1.2em;
+      text-decoration: none;
+      border-radius: 50px;
+      box-shadow: 0 0 20px #ffd700, 0 0 40px #ff6600;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cta:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 40px #ffd700, 0 0 80px #ff6600;
+    }
+
+    footer {
+      margin-top: 80px;
+      font-size: 0.9em;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <canvas id="feathers"></canvas>
+
+  <div class="emblem-container">
+    <div class="wings left"></div>
+    <div class="wings right"></div>
+    <div class="emblem"></div>
+  </div>
+
+  <h1>👑 PlugNation Studios</h1>
+  <p>By <strong>Marshall Kyalla Junior</strong> — where divine light meets street hustle.</p>
+  <p>Powered by the <span style="color:#ffd700;">G Server</span> — blessed by angels, feared by the game.</p>
+  <p>We don’t just host your site. We crown it.</p>
+  <a href="#" class="cta">Claim Your Throne</a>
+
+  <footer>
+    &copy; 3025 PlugNation Studios — Royal in Heaven, Boss on Earth
+  </footer>
+
+  <script>
+    // Starfield effect
+    const starsCanvas = document.getElementById('stars');
+    const starsCtx = starsCanvas.getContext('2d');
+    let stars = [];
+
+    function resizeStars() {
+      starsCanvas.width = window.innerWidth;
+      starsCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeStars);
+    resizeStars();
+
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * starsCanvas.width,
+        y: Math.random() * starsCanvas.height,
+        z: Math.random() * starsCanvas.width
+      });
+    }
+
+    function drawStars() {
+      starsCtx.fillStyle = 'black';
+      starsCtx.fillRect(0, 0, starsCanvas.width, starsCanvas.height);
+      starsCtx.fillStyle = '#ffd700';
+      for (let star of stars) {
+        let k = 128.0 / star.z;
+        let x = (star.x - starsCanvas.width / 2) * k + starsCanvas.width / 2;
+        let y = (star.y - starsCanvas.height / 2) * k + starsCanvas.height / 2;
+        let size = (1 - star.z / starsCanvas.width) * 2;
+        starsCtx.fillRect(x, y, size, size);
+      }
+    }
+
+    function moveStars() {
+      for (let star of stars) {
+        star.z -= 2;
+        if (star.z <= 0) {
+          star.x = Math.random() * starsCanvas.width;
+          star.y = Math.random() * starsCanvas.height;
+          star.z = starsCanvas.width;
+        }
+      }
+    }
+
+    function animateStars() {
+      moveStars();
+      drawStars();
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    // Falling feathers effect
+    const feathersCanvas = document.getElementById('feathers');
+    const feathersCtx = feathersCanvas.getContext('2d');
+    let feathers = [];
+
+    function resizeFeathers() {
+      feathersCanvas.width = window.innerWidth;
+      feathersCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeFeathers);
+    resizeFeathers();
+
+    function createFeather() {
+      return {
+        x: Math.random() * feathersCanvas.width,
+        y: -20,
+        size: 10 + Math.random() * 20,
+        speed: 0.5 + Math.random() * 1.5,
+        drift: (Math.random() - 0.5) * 1

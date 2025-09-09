@@ -1,0 +1,12 @@
+const express = require('express');
+const router = express.Router();
+const requireAdmin = require('../middleware/requireAdmin');
+const controller = require('../controllers/adminController');
+
+router.get('/sites', requireAdmin, controller.listSites);
+router.delete('/site/:client', requireAdmin, controller.deleteSite);
+router.post('/backup', requireAdmin, controller.backup);
+
+router.post('/create-client-token', requireAdmin, controller.createClientToken);
+
+module.exports = router;

@@ -1,0 +1,73 @@
+const fs = require('fs');
+const path = require('path');
+const AdmZip = require('adm-zip'); // we'll use AdmZip for zipping
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET, SITES_DIR, DATA_DIR, BACKUPS_DIR, USE_S3 } = require('../config');
+const { deletePrefixFromS3 } = require('../utils/storage');
+const logger = require('../logger');
+
+const SITES_META_PATH = path.join(DATA_DIR, 'sites.json');
+
+function readSitesMeta() {
+  try {
+    if (!fs.existsSync(SITES_META_PATH)) return {};
+    return JSON.parse(fs.readFileSync(SITES_META_PATH, 'utf8') || '{}');
+  } catch (e) {
+    return {};
+  }
+}
+function writeSitesMeta(meta) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  const tmp = SITES_META_PATH + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(meta, null, 2), 'utf8');
+  fs.renameSync(tmp, SITES_META_PATH);
+}
+
+exports.listSites = (req, res) => {
+  const meta = readSitesMeta();
+  res.json({ sites: meta });
+};
+
+exports.deleteSite = async (req, res) => {
+  try {
+    const client = req.params.client;
+    const meta = readSitesMeta();
+    if (!meta[client]) return res.status(404).json({ error: 'not found' });
+    if (meta[client].storage === 's3' && USE_S3) {
+      await deletePrefixFromS3(client + '/');
+    } else {
+      const dir = path.join(SITES_DIR, client);
+      if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true });
+    }
+    delete meta[client];
+    writeSitesMeta(meta);
+    logger.info('site-deleted', { client });
+    res.json({ ok: true });
+  } catch (err) {
+    logger.error('deleteSite error', err);
+    res.status(500).json({ error: 'internal' });
+  }
+};
+
+exports.backup = (req, res) => {
+  try {
+    const t = Date.now();
+    const out = path.join(BACKUPS_DIR, `backup-${t}.zip`);
+    const zip = new AdmZip();
+    // add entire sites folder
+    zip.addLocalFolder(SITES_DIR, 'sites');
+    zip.writeZip(out);
+    logger.info('backup created', { out });
+    res.json({ ok: true, file: `/backups/backup-${t}.zip` });
+  } catch (err) {
+    logger.error('backup error', err);
+    res.status(500).json({ error: 'backup failed' });
+  }
+};
+
+exports.createClientToken = (req, res) => {
+  const client = req.body && req.body.client;
+  if (!client) return res.status(400).json({ error: 'client required' });
+  const token = jwt.sign({ client }, JWT_SECRET, { expiresIn: '365d' });
+  res.json({ ok: true, token });
+};

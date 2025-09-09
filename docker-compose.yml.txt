@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    container_name: godmode_app
+    volumes:
+      - ./data:/usr/src/app/data
+      - ./sites:/usr/src/app/sites
+      - ./tmp:/usr/src/app/tmp
+      - ./backups:/usr/src/app/backups
+      - ./:/usr/src/app
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # When using docker, define your secrets in environment or bind a .env file
+    networks:
+      - webnet
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    container_name: godmode_caddy
+    depends_on:
+      - app
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - webnet
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  webnet:

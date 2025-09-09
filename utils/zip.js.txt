@@ -1,0 +1,27 @@
+const AdmZip = require('adm-zip');
+const path = require('path');
+const fs = require('fs');
+
+function extractZipSafely(zipPath, destDir) {
+  const zip = new AdmZip(zipPath);
+  const entries = zip.getEntries();
+  for (const entry of entries) {
+    const entryName = entry.entryName;
+    if (entryName.includes('..') || path.isAbsolute(entryName)) {
+      throw new Error('Invalid zip entry (possible zip-slip)');
+    }
+    const targetPath = path.join(destDir, entryName);
+    const resolved = path.resolve(targetPath);
+    if (!resolved.startsWith(path.resolve(destDir))) {
+      throw new Error('Zip entry escapes target directory');
+    }
+    if (entry.isDirectory) {
+      if (!fs.existsSync(resolved)) fs.mkdirSync(resolved, { recursive: true });
+    } else {
+      const parent = path.dirname(resolved);
+      if (!fs.existsSync(parent)) fs.mkdirSync(parent, { recursive: true });
+      fs.writeFileSync(resolved, entry.getData());
+    }
+  }
+}
+module.exports = { extractZipSafely };

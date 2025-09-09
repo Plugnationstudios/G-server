@@ -1,0 +1,99 @@
+const fs = require('fs');
+const path = require('path');
+const { extractZipSafely } = require('../utils/zip');
+const { uploadDirToS3 } = require('../utils/storage');
+const { UPLOAD_SECRET, TMP_DIR, SITES_DIR, DATA_DIR, USE_S3 } = require('../config');
+const sanitize = require('sanitize-filename');
+const logger = require('../logger');
+
+const SITES_META_PATH = path.join(DATA_DIR, 'sites.json');
+
+function readSitesMeta() {
+  try {
+    if (!fs.existsSync(SITES_META_PATH)) return {};
+    return JSON.parse(fs.readFileSync(SITES_META_PATH, 'utf8') || '{}');
+  } catch (e) {
+    logger.error('readSitesMeta error', e);
+    return {};
+  }
+}
+function writeSitesMeta(meta) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  const tmp = SITES_META_PATH + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(meta, null, 2), 'utf8');
+  fs.renameSync(tmp, SITES_META_PATH);
+}
+
+exports.handleUpload = async function (req, res) {
+  try {
+    const token = req.header('x-upload-token') || '';
+    if (token !== UPLOAD_SECRET) {
+      if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+      return res.status(403).json({ error: 'forbidden' });
+    }
+    if (!req.file) return res.status(400).json({ error: 'site zip required' });
+    const clientRaw = (req.body.client || '').toString();
+    if (!clientRaw) { fs.unlinkSync(req.file.path); return res.status(400).json({ error: 'client field required' }); }
+    const client = sanitize(clientRaw).toLowerCase().replace(/\s+/g,'-');
+    if (!/^[a-z0-9\-_]+$/.test(client)) { fs.unlinkSync(req.file.path); return res.status(400).json({ error: 'invalid client name' }); }
+
+    // validate zip magic
+    const fd = fs.openSync(req.file.path, 'r');
+    const buf = Buffer.alloc(4);
+    fs.readSync(fd, buf, 0, 4, 0);
+    fs.closeSync(fd);
+    if (!buf.toString('binary').startsWith('PK')) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ error: 'invalid zip' });
+    }
+
+    // extract
+    const dest = path.join(SITES_DIR, client);
+    if (fs.existsSync(dest)) fs.rmSync(dest, { recursive: true, force: true });
+    fs.mkdirSync(dest, { recursive: true });
+
+    try {
+      extractZipSafely(req.file.path, dest);
+    } catch (err) {
+      fs.rmSync(dest, { recursive: true, force: true });
+      fs.unlinkSync(req.file.path);
+      logger.error('zip-extract-error', err.message);
+      return res.status(400).json({ error: 'zip extraction failed: ' + err.message });
+    }
+
+    // remove tmp zip
+    fs.unlinkSync(req.file.path);
+
+    // ensure index.html present
+    const indexPath = path.join(dest, 'index.html');
+    const hasIndex = fs.existsSync(indexPath) || fs.readdirSync(dest).some(f => f.toLowerCase().endsWith('.html'));
+    if (!hasIndex) {
+      fs.rmSync(dest, { recursive: true, force: true });
+      return res.status(400).json({ error: 'index.html required at site root' });
+    }
+
+    // record meta
+    const meta = readSitesMeta();
+    meta[client] = { client, uploadedAt: new Date().toISOString(), storage: USE_S3 ? 's3' : 'local', urlPath: `/s/${client}/` };
+    writeSitesMeta(meta);
+
+    // upload to s3 if enabled
+    if (USE_S3) {
+      try {
+        await uploadDirToS3(dest, client);
+        // remove local copy to save space
+        fs.rmSync(dest, { recursive: true, force: true });
+      } catch (err) {
+        logger.error('upload to s3 failed', err);
+        return res.status(500).json({ error: 'upload to s3 failed' });
+      }
+    }
+
+    logger.info('site-deployed', { client });
+    return res.json({ ok: true, url: `/s/${client}/` });
+
+  } catch (err) {
+    logger.error('upload-handler', err);
+    return res.status(500).json({ error: 'internal' });
+  }
+};

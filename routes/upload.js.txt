@@ -1,0 +1,29 @@
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const { TMP_DIR } = require('../config');
+const sanitize = require('sanitize-filename');
+const { MAX_UPLOAD_BYTES } = require('../config');
+
+const router = express.Router();
+
+// multer to tmp directory
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, TMP_DIR),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + sanitize(file.originalname))
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: MAX_UPLOAD_BYTES },
+  fileFilter: (req, file, cb) => {
+    if (!file.originalname.match(/\.zip$/i)) return cb(new Error('Only .zip allowed'), false);
+    cb(null, true);
+  }
+});
+
+const controller = require('../controllers/uploadController');
+
+router.post('/', upload.single('site'), controller.handleUpload);
+
+module.exports = router;

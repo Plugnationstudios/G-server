@@ -1,0 +1,11 @@
+{
+  # Optional global options
+  email you@example.com
+  # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory  # use staging for testing
+}
+
+# root domain and wildcard subdomains (Caddy will request certs for each host)
+# Note: Let's Encrypt wildcard cert requires DNS challenge; here Caddy will request certs per host via HTTP challenge.
+gserverjr.duckdns.org, *.gserverjr.duckdns.org {
+  reverse_proxy app:3000
+}

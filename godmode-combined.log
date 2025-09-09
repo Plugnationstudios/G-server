@@ -1,0 +1,26 @@
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-08T11:45:14.375Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-08T11:48:19.596Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-08T11:55:25.394Z"}
+{"level":"info","message":"::1 - - [08/Sep/2025:11:56:02 +0000] \"GET /health HTTP/1.1\" 200 41 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0\"","timestamp":"2025-09-08T11:56:02.690Z"}
+{"level":"info","message":"::1 - - [08/Sep/2025:11:56:09 +0000] \"GET /health HTTP/1.1\" 200 41 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0\"","timestamp":"2025-09-08T11:56:09.742Z"}
+{"level":"info","message":"::1 - - [08/Sep/2025:11:56:10 +0000] \"GET /health HTTP/1.1\" 200 41 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0\"","timestamp":"2025-09-08T11:56:10.700Z"}
+{"level":"info","message":"::1 - - [08/Sep/2025:11:56:11 +0000] \"GET /health HTTP/1.1\" 200 41 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0\"","timestamp":"2025-09-08T11:56:11.320Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-08T12:01:04.513Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-08T12:01:19.195Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-08T12:11:28.242Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-08T12:12:48.031Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-08T12:37:45.016Z"}
+{"level":"info","message":"::1 - - [08/Sep/2025:12:39:56 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0\"","timestamp":"2025-09-08T12:39:56.802Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-09T06:40:05.197Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:42:47 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:42:47.855Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:42:51 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:42:51.365Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:42:51 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:42:51.923Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-09T06:44:15.445Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:44:39 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:44:39.149Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:44:39 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:44:39.936Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:44:43 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:44:43.136Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:44:46 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:44:46.407Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:44:46 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:44:46.859Z"}
+{"level":"info","message":"::1 - - [09/Sep/2025:06:44:47 +0000] \"GET / HTTP/1.1\" 404 139 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0\"","timestamp":"2025-09-09T06:44:47.003Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-09T06:51:33.138Z"}
+{"level":"info","message":"GodMode Server listening on 3000","timestamp":"2025-09-09T06:52:14.495Z"}

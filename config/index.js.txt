@@ -1,0 +1,23 @@
+const path = require('path');
+require('dotenv').config();
+
+module.exports = {
+  PORT: parseInt(process.env.PORT || '3000', 10),
+  NODE_ENV: process.env.NODE_ENV || 'development',
+  BASE_DOMAIN: process.env.BASE_DOMAIN || 'gserverjr.duckdns.org',
+  UPLOAD_SECRET: process.env.UPLOAD_SECRET || 'change_me',
+  ADMIN_TOKEN: process.env.ADMIN_TOKEN || 'change_admin',
+  JWT_SECRET: process.env.JWT_SECRET || 'jwt_secret',
+  MAX_UPLOAD_BYTES: parseInt(process.env.MAX_UPLOAD_BYTES || '52428800', 10),
+  RATE_LIMIT_WINDOW_MS: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000', 10),
+  RATE_LIMIT_MAX: parseInt(process.env.RATE_LIMIT_MAX || '120', 10),
+  USE_S3: (process.env.USE_S3 || 'false').toLowerCase() === 'true',
+  AWS_REGION: process.env.AWS_REGION || 'us-east-1',
+  S3_BUCKET: process.env.S3_BUCKET || '',
+  ROOT_DIR: path.resolve(__dirname, '..'),
+  TMP_DIR: path.resolve(__dirname, '..', 'tmp'),
+  SITES_DIR: path.resolve(__dirname, '..', 'sites'),
+  DATA_DIR: path.resolve(__dirname, '..', 'data'),
+  BACKUPS_DIR: path.resolve(__dirname, '..', 'backups'),
+  LOG_LEVEL: process.env.LOG_LEVEL || 'info'
+};
