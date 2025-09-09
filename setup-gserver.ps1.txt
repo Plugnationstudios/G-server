@@ -1,0 +1,66 @@
+# =========================
+# G SERVER SETUP SCRIPT
+# Author: Marshall Junior Kyalla (PlugNation Studios)
+# Purpose: Setup folders, JSON files, and .env for God Mode Server
+# =========================
+
+# -------------------------
+# 1. Create directories
+# -------------------------
+$dirs = @("tmp", "sites", "data", "backups")
+foreach ($d in $dirs) {
+    if (-not (Test-Path $d)) {
+        New-Item -ItemType Directory -Path $d | Out-Null
+        Write-Host "Created directory: $d"
+    } else {
+        Write-Host "Directory already exists: $d"
+    }
+}
+
+# -------------------------
+# 2. Create JSON files
+# -------------------------
+$clientsFile = "data\clients.json"
+$sitesFile   = "data\sites.json"
+
+if (-not (Test-Path $clientsFile)) {
+    Set-Content -Path $clientsFile -Value "{}"
+    Write-Host "Created file: $clientsFile"
+} else { Write-Host "File already exists: $clientsFile" }
+
+if (-not (Test-Path $sitesFile)) {
+    Set-Content -Path $sitesFile -Value "{}"
+    Write-Host "Created file: $sitesFile"
+} else { Write-Host "File already exists: $sitesFile" }
+
+# -------------------------
+# 3. Create .env file
+# -------------------------
+$envFile = ".env"
+if (-not (Test-Path $envFile)) {
+$envContent = @"
+PORT=3000
+NODE_ENV=production
+
+# Secrets (generate long random string)
+UPLOAD_SECRET=cBbEVAKc0Dpy5NXo0RQ5OCmoyQiOHQLJgfLOnWwIubk=
+ADMIN_TOKEN=LnJtwFIx5az33zXjRw61kswN/awo0ecPpPbKjn48srQ=
+JWT_SECRET=etkax/c3JEnKKk6eMPqyUc38xh7GB6nAJEisYK4VhHU=
+
+# Upload limits
+MAX_UPLOAD_BYTES=52428800
+
+# Rate limit (window ms & max requests)
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX=120
+
+# S3 storage toggle and config (set USE_S3=true to enable)
+USE_S3=false
+AWS_REGION=us-east-1
+S3_BUCKET=your-bucket-name
+"@
+    Set-Content -Path $envFile -Value $envContent
+    Write-Host "Created file: $envFile"
+} else { Write-Host ".env file already exists" }
+
+Write-Host "✅ G Server setup complete. You can now run: node server.js"
